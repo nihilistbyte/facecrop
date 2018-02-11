@@ -1,0 +1,25 @@
+C:\Users\Emiliano\AppData\Local\Temporary Projects\facecrop\bin\Debug\facecrop.exe.config
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\facecrop.exe.config
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.dll.config
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\facecrop.exe
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\facecrop.pdb
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Imaging.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.MachineLearning.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Math.Core.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Math.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Statistics.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Video.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Vision.dll
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Imaging.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.MachineLearning.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Math.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Math.Core.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Statistics.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Video.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\Accord.Vision.xml
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\obj\Debug\facecrop.exe
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\obj\Debug\facecrop.pdb
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\bin\Debug\README.TXT
+C:\Users\Emiliano\Documents\Visual Studio 2015\Projects\facecrop\facecrop\obj\Debug\facecrop.csprojResolveAssemblyReference.cache

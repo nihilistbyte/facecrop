@@ -1,0 +1,17 @@
+[2018-02-10 20:26:16] FACECROP - Face extraction program by NihilistByte
+[2018-02-10 20:26:16] ==================================================
+[2018-02-10 20:26:16] Reading option file
+[2018-02-10 20:26:16] Processing file c:\tmp\faces\67.jpg
+[2018-02-10 20:26:17] Detected 2 faces
+[2018-02-10 20:26:17] Output file c:\tmp\faces\cropped\outp00001.png
+[2018-02-10 20:26:17] Output file c:\tmp\faces\cropped\outp00002.png
+[2018-02-10 20:26:17] Processing file c:\tmp\faces\BagJoNcIUAAcHgx.jpg
+[2018-02-10 20:26:17] Detected 1 faces
+[2018-02-10 20:26:17] Output file c:\tmp\faces\cropped\outp00003.png
+[2018-02-10 20:26:17] Processing file c:\tmp\faces\Bd1YyOiCUAA3iSa.jpg
+[2018-02-10 20:26:17] Detected 1 faces
+[2018-02-10 20:26:17] Output file c:\tmp\faces\cropped\outp00004.png
+[2018-02-10 20:26:17] Processing file c:\tmp\faces\Rare-Behind-The-Scenes-Photos-From-The-Original-Star-Wars-Set.jpg
+[2018-02-10 20:26:18] Detected 2 faces
+[2018-02-10 20:26:18] Output file c:\tmp\faces\cropped\outp00005.png
+[2018-02-10 20:26:18] Output file c:\tmp\faces\cropped\outp00006.png
