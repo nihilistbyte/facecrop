@@ -1,66 +1,113 @@
 ﻿using Accord.Vision.Detection;
 using Accord.Vision.Detection.Cascades;
+using CommandLine;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows.Forms;
 
 namespace facecrop
 {
+    class Options
+    {
+        [Option(Required = true, HelpText = "The source path for images to be cropped")]
+        public string SOURCE_FOLDER { get; set; }
+
+        [Option(HelpText = "The file pattern to search for in SOURCE_FOLDER", Default = "*.*")]
+        public string FILE_MASK { get; set; }
+
+        [Option(HelpText = "The minimum size of faces to detect", Default = 30)]
+        public int FACE_MINSIZE { get; set; }
+
+        [Option(HelpText = "HAAR search mode", Default = 3)]
+        public int HAAR_SEARCHMODE { get; set; }
+
+        [Option(HelpText = "Scaling factor", Default = 1.2F)]
+        public float SCALING_FACTOR { get; set; }
+
+        [Option(HelpText = "Scaling mode", Default = 0)]
+        public int SCALING_MODE { get; set; }
+
+        [Option(HelpText = "Use parallelism in face detection", Default = true)]
+        public bool USE_PARALLEL { get; set; }
+
+        [Option(HelpText = "Number of similar faces to be suppressed", Default = 2)]
+        public int SUPPRESSION { get; set; }
+
+        [Option(Required = true, HelpText = "The destination folder in which to save cropped faces")]
+        public string DEST_FOLDER { get; set; }
+
+        [Option(HelpText = "Prefix to impose to output files", Default = "outp")]
+        public string OUT_PREFIX { get; set; }
+
+        [Option(HelpText = "Output format for cropped faces (BMP; PNG; JPG; JPEG)", Default = "png")]
+        public string OUT_FORMAT { get; set; }
+
+        [Option(HelpText = "Output file size", Default = 256)]
+        public int OUT_SIZE { get; set; }
+
+        [Option(HelpText = "Delete duplicate output files", Default = true)]
+        public bool REMOVE_DUPLICATES { get; set; }
+    }
+
     static class Program
     {
         static StreamWriter _logStream;
 
-        const string _optFile            = "facecrop.ini";
-
-        const string _optSourceFolder    = "SOURCE_FOLDER";
-        const string _optSourceFileMask  = "FILE_MASK";
-        const string _optHaarMinSize     = "HAAR_MINSIZE";
-        const string _optHaarSearchMode  = "SEARCH_MODE";
-        const string _optHaarScalingFact = "SCALING_FACTOR";
-        const string _optHaarScalingMode = "SCALING_MODE";
-        const string _optHaarParallel    = "PARALLEL_PROCESSING";
-        const string _optHaarSuppression = "SUPPRESSION";
-        const string _optDestFolder      = "DESTINATION_FOLDER";
-        const string _optDestPrefix      = "OUTPUT_PREFIX";
-        const string _optDestFileType    = "OUTPUT_TYPE";
-        const string _optDestSize        = "OUTPUT_SIZE";
-
-        static string _varSourceFolder    = @"c:\tmp\faces";
-        static string _varSourceFileMask  = "*.*";
-        static int    _varHaarMinSize     = 30;
-        static int    _varHaarSearchMode  = 3;
-        static float  _varHaarScalingFact = 1.2F;
+        static string _varSourceFolder    = "";
+        static string _varSourceFileMask  = "";
+        static int    _varHaarMinSize     = 0;
+        static int    _varHaarSearchMode  = 0;
+        static float  _varHaarScalingFact = 0;
         static int    _varHaarScalingMode = 0;
         static bool   _varHaarParallel    = true;
         static int    _varHaarSuppression = 2;
-        static string _varDestFolder      = @"c:\tmp\faces\cropped";
-        static string _varDestPrefix      = "outp";
-        static string _varDestFileType    = "png";
-        static int    _varDestSize        = 255;
+        static string _varDestFolder      = "";
+        static string _varDestPrefix      = "";
+        static string _varDestFileType    = "";
+        static int    _varDestSize        = 0;
+        static bool   _varDeleteDup       = true;
 
         static long numImages = 0;
-
+        
         static void Main(string[] args)
         {
             _logStream = new StreamWriter("facecrop.log");
 
+            Parser.Default.ParseArguments<Options>(args)
+                          .WithParsed<Options>(opts => RunCropping(opts));
+        }
+
+        private static void RunCropping(Options opts)
+        {
+            _varSourceFolder    = opts.SOURCE_FOLDER;
+            _varSourceFileMask  = opts.FILE_MASK;
+            _varHaarMinSize     = opts.FACE_MINSIZE;
+            _varHaarSearchMode  = opts.HAAR_SEARCHMODE;
+            _varHaarScalingFact = opts.SCALING_FACTOR;
+            _varHaarScalingMode = opts.SCALING_MODE;
+            _varHaarParallel    = opts.USE_PARALLEL;
+            _varHaarSuppression = opts.SUPPRESSION;
+            _varDestFolder      = opts.DEST_FOLDER;
+            _varDestPrefix      = opts.OUT_PREFIX;
+            _varDestFileType    = opts.OUT_FORMAT;
+            _varDestSize        = opts.OUT_SIZE;
+
             LogMessage("FACECROP - Face extraction program by /u/NihilistByte");
             LogMessage("==================================================");
 
-            if (ReadOptions())
+            Directory.CreateDirectory(_varDestFolder);
+
+            foreach (var f in Directory.GetFiles(_varSourceFolder, _varSourceFileMask))
             {
-                Directory.CreateDirectory(_varDestFolder);
+                LogMessage("Processing file " + f);
+                Process(f);
+            }
 
-                foreach (var f in Directory.GetFiles(_varSourceFolder, _varSourceFileMask))
-                {
-                    LogMessage("Processing file " + f);
-                    Process(f);
-                }
-
+            if (_varDeleteDup)
+            {
                 foreach (var f in Directory.GetFiles(_varDestFolder, "*." + _varDestFileType))
                 {
                     if (!File.Exists(f)) continue;
@@ -206,108 +253,6 @@ namespace facecrop
             bool i = false;
             bool.TryParse(text, out i);
             return i;
-        }
-
-        public static bool ReadOptions()
-        {
-            LogMessage("Reading option file");
-
-            if (!File.Exists(_optFile))
-            {
-                var appName = Path.GetFileName(Environment.GetCommandLineArgs()[0]);
-                var m = "Option file " + _optFile + " not found, now created by program.\nPlease check " + _optFile + " parameters then restart " + appName;
-                MessageBox.Show(m, appName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _logStream.WriteLine(m);
-                WriteOptions();
-                return false;
-            }
-
-            using(var sr = new StreamReader(_optFile))
-            {
-                while (!sr.EndOfStream)
-                {
-                    var pars = sr.ReadLine().Split('=');
-                    if (pars[0] != "") pars[0] = pars[0].Trim();
-                    if (pars[1] != "") pars[1] = pars[1].Trim();
-
-                    switch (pars[0])
-                    {
-                        case _optSourceFolder:
-                            _varSourceFolder = pars[1];
-                            break;
-
-                        case _optSourceFileMask:
-                            _varSourceFileMask = pars[1];
-                            break;
-
-                        case _optHaarMinSize:
-                            _varHaarMinSize = pars[1].ToInt32();
-                            break;
-
-                        case _optHaarSearchMode:
-                            _varHaarSearchMode = pars[1].ToInt32();
-                            break;
-
-                        case _optHaarScalingFact:
-                            _varHaarScalingFact = pars[1].ToFloat();
-                            break;
-
-                        case _optHaarScalingMode:
-                            _varHaarScalingMode = pars[1].ToInt32();
-                            break;
-
-                        case _optHaarParallel:
-                            _varHaarParallel = pars[1].ToBool();
-                            break;
-
-                        case _optHaarSuppression:
-                            _varHaarSuppression = pars[1].ToInt32();
-                            break;
-
-                        case _optDestFolder:
-                            _varDestFolder = pars[1];
-                            break;
-
-                        case _optDestPrefix:
-                            _varDestPrefix = pars[1];
-                            break;
-
-                        case _optDestFileType:
-                            _varDestFileType = pars[1];
-                            break;
-
-                        case _optDestSize:
-                            _varDestSize = pars[1].ToInt32();
-                            break;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public static string ParamNameVal(string name, object val)
-        {
-            return name + " = " + val;
-        }
-
-        public static void WriteOptions()
-        {
-            using (var sw = new StreamWriter(_optFile))
-            {
-                sw.WriteLine(ParamNameVal(_optSourceFolder, _varSourceFolder));
-                sw.WriteLine(ParamNameVal(_optSourceFileMask, _varSourceFileMask));
-                sw.WriteLine(ParamNameVal(_optHaarMinSize, _varHaarMinSize));
-                sw.WriteLine(ParamNameVal(_optHaarSearchMode, _varHaarSearchMode));
-                sw.WriteLine(ParamNameVal(_optHaarScalingFact, _varHaarScalingFact));
-                sw.WriteLine(ParamNameVal(_optHaarScalingMode, _varHaarScalingMode));
-                sw.WriteLine(ParamNameVal(_optHaarParallel, _varHaarParallel));
-                sw.WriteLine(ParamNameVal(_optHaarSuppression, _varHaarSuppression));
-                sw.WriteLine(ParamNameVal(_optDestFolder, _varDestFolder));
-                sw.WriteLine(ParamNameVal(_optDestPrefix, _varDestPrefix));
-                sw.WriteLine(ParamNameVal(_optDestFileType, _varDestFileType));
-                sw.WriteLine(ParamNameVal(_optDestSize, _varDestSize));
-            }
         }
 
         public static bool ImageCompare(Bitmap bmp1, string pathComparison)
